@@ -77,7 +77,7 @@ python -m venv .venv && source .venv/bin/activate # On Windows: .venv\Scripts\ac
 
 # Install the starter pack and create your project
 pip install --upgrade agent-starter-pack
-agent-starter-pack create my-task-planner -a adk@task-planner
+agent-starter-pack create my-task-planner -a adk@sdlc-task-planner
 ```
 
 <details>
