@@ -81,7 +81,7 @@ python -m venv .venv && source .venv/bin/activate # On Windows: .venv\Scripts\ac
 
 # Install the starter pack and create your project
 pip install --upgrade agent-starter-pack
-agent-starter-pack create my-user-story-refiner -a adk@user-story-refiner
+agent-starter-pack create my-user-story-refiner -a adk@sdlc-user-story-refiner
 ```
 
 <details>
