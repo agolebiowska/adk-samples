@@ -8,7 +8,7 @@ class AgentConfig(BaseSettings):
     """
 
     default_llm: str = Field(
-        default="gemini-3.1-pro-preview", alias='DEFAULT_LLM'
+        default="gemini-2.5-pro", alias='DEFAULT_LLM'
     )
     spanner_project_id: str | None = Field(
         default=None, alias='SPANNER_PROJECT_ID'

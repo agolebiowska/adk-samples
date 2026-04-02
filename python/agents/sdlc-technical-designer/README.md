@@ -85,7 +85,7 @@ python -m venv .venv && source .venv/bin/activate # On Windows: .venv\Scripts\ac
 
 # Install the starter pack and create your project
 pip install --upgrade agent-starter-pack
-agent-starter-pack create my-technical-designer -a adk@technical-designer
+agent-starter-pack create my-technical-designer -a adk@sdlc-technical-designer
 ```
 
 <details>
