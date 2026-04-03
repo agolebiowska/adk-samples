@@ -7,9 +7,7 @@ class AgentConfig(BaseSettings):
     Configuration for the Task Planner Agent.
     """
 
-    default_llm: str = Field(
-        default="gemini-2.5-pro", alias='DEFAULT_LLM'
-    )
+    default_llm: str = Field(default="gemini-2.5-pro", alias="DEFAULT_LLM")
 
     model_config = SettingsConfigDict(
         env_prefix="AGENT_",

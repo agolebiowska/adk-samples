@@ -2,6 +2,10 @@
 name = "sdlc-task-planner"
 version = "0.1.0"
 description = "A task planner agent for managing and organizing tasks efficiently."
+authors = [
+    { name = "Agata Golebiowska", email = "gagata@google.com" },
+    { name = "Tomasz Switon", email = "switon@google.com" },
+]
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -20,6 +24,7 @@ dev = [
     "google-adk[eval]>=1.0.0",
     "nest-asyncio>=1.6.0",
     "agent-starter-pack>=0.14.1",
+    "python-dotenv>=1.0.1",
 ]
 
 deployment = [
@@ -36,24 +41,32 @@ lint = [
 ]
 
 [tool.ruff]
-line-length = 88
-target-version = "py312"
+line-length = 80
+target-version = "py311"
 
 [tool.ruff.lint]
 select = [
-    "E",   # pycodestyle
-    "F",   # pyflakes
-    "W",   # pycodestyle warnings
-    "I",   # isort
-    "C",  # flake8-comprehensions
-    "B",   # flake8-bugbear
+    "E", # pycodestyle
+    "F", # pyflakes
+    "I", # isort
+    "C", # flake8-comprehension
+    "PL", # Pylint rules
+    "B", # flake8-bugbear
     "UP", # pyupgrade
-    "RUF", # ruff specific rules
+    "RUF" # ruff specific rules
 ]
-ignore = ["E501", "C901"] # ignore line too long, too complex
+
+ignore = [
+    "E501", # Ignore line length for long LLM prompts
+    "PLR0913" # Allow agents to have many arguments if needed
+]
 
 [tool.ruff.lint.isort]
 known-first-party = ["sdlc_task_planner"]
+
+[tool.ruff.lint.per-file-ignores]
+# Global rule: ADK agents use __init__.py to expose their logic
+"__init__.py" = ["F401"]
 
 [tool.mypy]
 disallow_untyped_calls = true

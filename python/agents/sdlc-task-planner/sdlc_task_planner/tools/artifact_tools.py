@@ -1,8 +1,8 @@
 import logging
 from typing import Any
 
-import google.genai.types as types
 from google.adk.tools import ToolContext
+from google.genai import types
 
 logger = logging.getLogger(__name__)
 
@@ -45,12 +45,12 @@ async def save_artifact(
 
         if format.lower() == "markdown":
             mime_type = "text/markdown"
-            if not filename.lower().endswith('.md'):
+            if not filename.lower().endswith(".md"):
                 filename = f"{filename}.md"
         else:
             mime_type = "text/plain"
 
-        content_bytes = content.encode('utf-8')
+        content_bytes = content.encode("utf-8")
 
         artifact = types.Part.from_bytes(
             data=content_bytes, mime_type=mime_type
@@ -74,7 +74,7 @@ async def save_artifact(
         }
 
     except ValueError as e:
-        logger.error(f"ValueError: {str(e)}")
+        logger.error(f"ValueError: {e!s}")
         return {
             "status": "error",
             "filename": filename,
@@ -84,7 +84,7 @@ async def save_artifact(
             "error": str(e),
         }
     except Exception as e:
-        logger.error(f"Unexpected error: {str(e)}")
+        logger.error(f"Unexpected error: {e!s}")
         return {
             "status": "error",
             "filename": filename,
