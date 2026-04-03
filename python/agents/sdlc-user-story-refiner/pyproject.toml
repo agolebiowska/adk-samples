@@ -2,6 +2,10 @@
 name = "sdlc-user-story-refiner"
 version = "0.1.0"
 description = "User Story Refiner Agent for refining and improving user stories in software development."
+authors = [
+    { name = "Agata Golebiowska", email = "gagata@google.com" },
+    { name = "Tomasz Switon", email = "switon@google.com" },
+]
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
