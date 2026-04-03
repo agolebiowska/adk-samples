@@ -3272,6 +3272,7 @@ dev = [
     { name = "nest-asyncio" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
+    { name = "python-dotenv" },
 ]
 
 [package.metadata]
@@ -3300,6 +3301,7 @@ dev = [
     { name = "nest-asyncio", specifier = ">=1.6.0" },
     { name = "pytest", specifier = ">=8.3.2" },
     { name = "pytest-asyncio", specifier = ">=0.23.7" },
+    { name = "python-dotenv", specifier = ">=1.0.1" },
 ]
 
 [[package]]

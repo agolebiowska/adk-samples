@@ -74,7 +74,7 @@ async def save_artifact(
         }
 
     except ValueError as e:
-        logger.error(f"ValueError: {str(e)}")
+        logger.error(f"ValueError: {e!s}")
         return {
             "status": "error",
             "filename": filename,
@@ -84,7 +84,7 @@ async def save_artifact(
             "error": str(e),
         }
     except Exception as e:
-        logger.error(f"Unexpected error: {str(e)}")
+        logger.error(f"Unexpected error: {e!s}")
         return {
             "status": "error",
             "filename": filename,
