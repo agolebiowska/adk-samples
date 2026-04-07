@@ -17,9 +17,7 @@ tools_enabled = bool(
     and config.spanner_database_id
 )
 if tools_enabled:
-    logger.info(
-        "Starting User Story Refiner Agent with Spanner tools enabled."
-    )
+    logger.info("Starting User Story Refiner Agent with Spanner tools enabled.")
 else:
     logger.info("Starting User Story Refiner Agent without Spanner tools.")
 

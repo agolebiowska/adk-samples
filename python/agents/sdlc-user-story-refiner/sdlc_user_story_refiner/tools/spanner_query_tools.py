@@ -7,7 +7,6 @@ from google.adk.tools.spanner.spanner_credentials import (
 
 
 class SpannerQueryTools:
-
     @classmethod
     def get_toolset(cls) -> list:
         """

@@ -7,17 +7,15 @@ class AgentConfig(BaseSettings):
     Configuration for the User Story Refiner Agent.
     """
 
-    default_llm: str = Field(
-        default="gemini-2.5-pro", alias='DEFAULT_LLM'
-    )
+    default_llm: str = Field(default="gemini-2.5-pro", alias="DEFAULT_LLM")
     spanner_project_id: str | None = Field(
-        default=None, alias='SPANNER_PROJECT_ID'
+        default=None, alias="SPANNER_PROJECT_ID"
     )
     spanner_instance_id: str | None = Field(
-        default=None, alias='SPANNER_INSTANCE_ID'
+        default=None, alias="SPANNER_INSTANCE_ID"
     )
     spanner_database_id: str | None = Field(
-        default=None, alias='SPANNER_DATABASE_ID'
+        default=None, alias="SPANNER_DATABASE_ID"
     )
 
     model_config = SettingsConfigDict(

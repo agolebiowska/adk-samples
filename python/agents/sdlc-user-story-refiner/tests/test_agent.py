@@ -15,8 +15,7 @@ def test_get_prompt_without_tools():
     prompt = get_prompt(tools_enabled=False)
     assert "Context Limitations" in prompt
     assert (
-        "You do NOT have access to search tools or external databases"
-        in prompt
+        "You do NOT have access to search tools or external databases" in prompt
     )
     assert "Context & Knowledge Base Retrieval" not in prompt
 
