@@ -80,9 +80,7 @@ def main(argv: list[str]) -> None:
         else os.getenv("GOOGLE_CLOUD_PROJECT")
     )
     location = (
-        FLAGS.location
-        if FLAGS.location
-        else os.getenv("GOOGLE_CLOUD_LOCATION")
+        FLAGS.location if FLAGS.location else os.getenv("GOOGLE_CLOUD_LOCATION")
     )
     bucket = (
         FLAGS.bucket

@@ -17,9 +17,7 @@ tools_enabled = bool(
     and config.spanner_database_id
 )
 if tools_enabled:
-    logger.info(
-        "Starting Technical Designer Agent with Spanner tools enabled."
-    )
+    logger.info("Starting Technical Designer Agent with Spanner tools enabled.")
 else:
     logger.info("Starting Technical Designer Agent without Spanner tools.")
 
