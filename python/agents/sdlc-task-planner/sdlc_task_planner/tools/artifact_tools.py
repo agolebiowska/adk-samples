@@ -60,11 +60,6 @@ async def save_artifact(
             filename=filename, artifact=artifact
         )
 
-        if "saved_artifacts" not in tool_context.state:
-            tool_context.state["saved_artifacts"] = []
-        if filename not in tool_context.state["saved_artifacts"]:
-            tool_context.state["saved_artifacts"].append(filename)
-
         logger.info(
             f"Successfully saved artifact '{filename}' as version {version}"
         )

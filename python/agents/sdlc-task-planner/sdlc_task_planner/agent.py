@@ -1,10 +1,7 @@
 from google.adk.agents import LlmAgent
-from google.adk.agents.callback_context import CallbackContext
-from google.genai import types
 
 from .config import config
 from .prompt import get_prompt
-from .tools.artifact_tools import save_artifact
 
 
 root_agent = LlmAgent(
