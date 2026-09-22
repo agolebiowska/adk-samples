@@ -1,4 +1,4 @@
-<!-- word count: 3010 (target 500+, no cap) -->
+<!-- word count: 3305 (target 500+, no cap) -->
 
 # Troubleshooting
 
@@ -31,6 +31,11 @@ Each command below says which directory to run it from. Replace
 - [A file or directory the recipe must have is absent](#required-file-or-directory-missing)
 - [The recipe sits at the wrong path](#recipe-is-in-the-wrong-folder)
 - [The recipe lives in a folder that no longer accepts edits](#changes-inside-a-retired-folder)
+- [Only repository admins may modify files under .github/](#only-repository-admins-may-modify-files-under-github)
+
+**Containers (Dockerfile)**
+- [Dockerfile failed to build](#dockerfile-build-failed)
+- [Recipe container does not serve](#recipe-container-does-not-serve)
 
 ### Python
 
@@ -66,6 +71,7 @@ Each command below says which directory to run it from. Replace
 
 **Nothing here matches**
 - [The failure is ours, not yours](#ci-infrastructure-failure)
+- [The AI reviewer keeps finding new things](#the-ai-reviewer-keeps-finding-new-things)
 - [Something else](#something-else)
 
 ---
@@ -216,6 +222,31 @@ out is never blocked.
 
 **Confirm**, from the repo root —
 `uv run validate structure contrib/<language>/<recipe>`
+
+## Only repository admins may modify files under .github/
+
+**Symptom** — `[github-dir-admin-only] ... is under .github/, which can only be modified by repository administrators.`
+
+**Cause** — files in the `.github/` directory (CI workflows, issue templates, automation scripts, and repository policy configuration) control repository-wide infrastructure and security. Only repository administrators are permitted to create, modify, or delete files under `.github/`.
+
+**Fix** — restore `.github/` to exactly what is on `main`. The `git rm` line is
+needed as well as the checkout: `git checkout` restores files that exist on
+`main` but leaves behind any file your branch *added* under `.github/`, which
+would keep the check failing.
+
+    git rm -r --quiet --ignore-unmatch .github/
+    git checkout origin/main -- .github/
+    git commit -m "Revert changes under .github/"
+
+If CI workflow or repository configuration changes are needed, please open an issue describing the requested changes or reach out to a repository administrator.
+
+**Confirm**, from the repo root — this lists exactly the files CI would flag.
+It deliberately passes `--is-admin false`, because the permission lookup needs
+a token the check has in CI and you generally do not have locally:
+
+    git -c core.quotePath=false diff --no-renames --name-only origin/main...HEAD \
+      | uv run --no-project python tools/check_github_dir_changes.py \
+          --author "$(git config user.name)" --is-admin false
 
 ## README.md is missing or empty
 
@@ -586,6 +617,36 @@ different fixes:
 **Confirm**, from the repo root —
 `grep -n "google-adk" <recipe-path>/pyproject.toml <recipe-path>/uv.lock`
 
+## Dockerfile build failed
+
+**Symptom** — `[docker-build]` or `Docker image failed to build`
+
+**Cause** — a `Dockerfile` at the root of the recipe directory failed to build. Every recipe that provides a root Dockerfile must build cleanly.
+
+**Fix**
+
+1. Build the image locally to reproduce the failure:
+   ```bash
+   docker build -f <recipe-path>/Dockerfile <recipe-path>
+   ```
+2. If files are missing in a `COPY` instruction, ensure all referenced files are committed or created conditionally during build.
+3. If dependency synchronization fails during `uv sync`, ensure `uv.lock` is up to date and compatible with the container's Python version.
+
+## Recipe container does not serve
+
+**Symptom** — `[docker-serves]` or `Container exited unexpectedly` or `Service inside container did not become accessible`
+
+**Cause** — the built container image exited prematurely on startup or did not respond to HTTP requests on port 8080.
+
+**Fix**
+
+1. Run the container locally with test environment variables:
+   ```bash
+   docker run -p 8080:8080 -e USE_IN_MEMORY_SESSION=true -e INTEGRATION_TEST=1 -e MODEL_NAME=gemini-3.5-flash <image-tag>
+   ```
+2. Inspect the container logs (`docker logs <container-id>`) for startup exceptions.
+3. Ensure required configuration variables have defaults in code or `.env.example`, and that import-time GCP calls handle missing credentials gracefully when running offline or in tests.
+
 ## Non-blocking notices
 
 **Symptom** — a `[NOTICE]` header. None of these block your PR.
@@ -596,6 +657,42 @@ different fixes:
 | `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_LOCATION` or `MODEL_NAME` absent from `.env.example` | Add them if the recipe reads them — see [Env var missing from .env.example](#env-var-missing-from-envexample). |
 | Core recipe behind the current ADK major | See [the section above](#core-recipe-is-behind-the-current-adk-major). |
 | Recipe marked `status: inactive` | See [the section above](#recipe-is-marked-inactive). |
+
+## The AI reviewer keeps finding new things
+
+**Symptom** — you fix everything the automated review said, push, and get a
+fresh batch of comments. It feels like it will never end.
+
+**Cause** — it used to work that way. Every push re-reviewed the whole pull
+request, and anything already said was filtered out, so each round was forced
+to surface findings you had not seen yet. On a big PR that could go on for a
+long time.
+
+**What happens now**
+
+- A round reads only what changed **since the last review**, so a push that
+  just fixes comments has almost nothing new to look at.
+- Each round is allowed fewer comments than the last one actually produced.
+- There is a hard ceiling on how many comments one PR can ever receive.
+- After the second round only the Correctness and Security lanes run, so the
+  smaller stuff stops.
+
+The last line of every automated review tells you where you are:
+
+> _Round 3 · 18 of this PR's 25 automated comments used · this round is capped
+> at 4 · from here only Correctness and Security run._
+
+**Fix** — nothing to fix; keep going and it will go quiet. Two things worth
+knowing:
+
+- The **House Rules** lane is exempt from all of the above. It is a script,
+  not a model, and it reports repository rules that mostly fail CI — so it
+  keeps commenting until you fix them. Those are the ones to act on.
+- A comment you disagree with: resolve the thread or react 👎 to it, and the
+  reviewer will not raise anything like it again on that PR.
+
+The numbers live in [`.github/policy.yml`](../../.github/policy.yml) under
+`pr_review_budget`.
 
 ## CI infrastructure failure
 
@@ -625,7 +722,7 @@ on the checker and not on your files.
 2. Run `uv run validate all <recipe-path>` from the repo root — a second
    failure is often the cause of the first.
 3. Open an issue at
-   [github.com/google/adk-samples/issues](https://github.com/google/adk-samples/issues):
+   [github.com/google/adk-recipes/issues](https://github.com/google/adk-recipes/issues):
 
    ```
    **Recipe path:** contrib/python/my-recipe
