@@ -18,7 +18,6 @@ import os
 import sys
 from pathlib import Path
 
-import tomllib
 import vertexai
 from absl import app, flags
 from dotenv import load_dotenv
@@ -45,6 +44,8 @@ flags.mark_bool_flags_as_mutual_exclusive(["create", "delete"])
 
 def _get_requirements() -> list[str]:
     """Reads dependencies from pyproject.toml."""
+    import tomllib
+
     pyproject_path = Path(__file__).resolve().parent.parent / "pyproject.toml"
     with open(pyproject_path, "rb") as f:
         data = tomllib.load(f)

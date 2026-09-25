@@ -51,7 +51,7 @@ def test_agent_config_defaults(monkeypatch):
         "AGENT_SPANNER_DATABASE_ID",
     ):
         monkeypatch.delenv(var, raising=False)
-    cfg = AgentConfig()
+    cfg = AgentConfig(_env_file=None)
     assert cfg.model_name is None
     assert cfg.default_llm is None
     assert cfg.spanner_project_id is None
@@ -68,7 +68,7 @@ def test_agent_config_aliases(monkeypatch):
     monkeypatch.setenv("AGENT_SPANNER_INSTANCE_ID", "test-instance")
     monkeypatch.setenv("AGENT_SPANNER_DATABASE_ID", "test-db")
 
-    cfg = AgentConfig()
+    cfg = AgentConfig(_env_file=None)
     assert cfg.model_name == "gemini-3.5-flash"
     assert cfg.default_llm == "gemini-3.5-flash"
     assert cfg.spanner_project_id == "test-project"
