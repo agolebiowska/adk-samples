@@ -16,7 +16,9 @@
 
 import os
 import sys
+from pathlib import Path
 
+import tomllib
 import vertexai
 from absl import app, flags
 from dotenv import load_dotenv
@@ -41,6 +43,14 @@ flags.DEFINE_bool("delete", False, "Deletes an existing agent.")
 flags.mark_bool_flags_as_mutual_exclusive(["create", "delete"])
 
 
+def _get_requirements() -> list[str]:
+    """Reads dependencies from pyproject.toml."""
+    pyproject_path = Path(__file__).resolve().parent.parent / "pyproject.toml"
+    with open(pyproject_path, "rb") as f:
+        data = tomllib.load(f)
+    return list(data.get("project", {}).get("dependencies", []))
+
+
 def create() -> None:
     """Creates an agent engine for SDLC Workflow Suite."""
     adk_app = AdkApp(agent=root_agent, enable_tracing=True)
@@ -48,16 +58,7 @@ def create() -> None:
     remote_agent = agent_engines.create(
         adk_app,
         display_name="sdlc-workflow-suite",
-        requirements=[
-            "google-adk (>=1.31.0)",
-            "google-cloud-aiplatform[adk,agent_engines] (>=1.93.0)",
-            "google-genai (>=1.9.0)",
-            "pydantic (>=2.10.6)",
-            "pydantic-settings (>=2.7.1)",
-            "python-dotenv (>=1.0.1)",
-            "sqlalchemy (>=2.0.38)",
-            "google-cloud-spanner (>=3.49.0)",
-        ],
+        requirements=_get_requirements(),
         extra_packages=[
             "./sdlc_workflow_suite",
         ],

@@ -25,6 +25,7 @@ from sdlc_workflow_suite.agent import (
     root_agent,
     task_planner_agent,
     technical_designer_agent,
+    user_story_refiner_agent,
 )
 
 pytest_plugins = ("pytest_asyncio",)
@@ -50,6 +51,31 @@ def create_runner_and_session():
 
 
 @pytest.mark.asyncio
+async def test_user_story_refiner_happy_path(create_runner_and_session):
+    """Runs the user story refiner agent on a sparse draft and expects an expanded story."""
+    user_input = "We need users to be able to log in with Google SSO."
+
+    runner, session = await create_runner_and_session(user_story_refiner_agent)
+    content = UserContent(parts=[Part(text=user_input)])
+    response = ""
+    async for event in runner.run_async(
+        user_id=session.user_id,
+        session_id=session.id,
+        new_message=content,
+    ):
+        if event.content and event.content.parts:
+            for part in event.content.parts:
+                if part.text:
+                    response += part.text
+
+    assert response != ""
+    assert (
+        "user story" in response.lower()
+        or "acceptance criteria" in response.lower()
+    )
+
+
+@pytest.mark.asyncio
 async def test_technical_designer_happy_path(create_runner_and_session):
     """Runs the technical designer agent on a simple input and expects a valid RFC design."""
     user_input = textwrap.dedent("""
@@ -65,12 +91,10 @@ async def test_technical_designer_happy_path(create_runner_and_session):
         session_id=session.id,
         new_message=content,
     ):
-        if (
-            event.content
-            and event.content.parts
-            and event.content.parts[0].text
-        ):
-            response = event.content.parts[0].text
+        if event.content and event.content.parts:
+            for part in event.content.parts:
+                if part.text:
+                    response += part.text
 
     assert "flask" in response.lower()
     assert "postgresql" in response.lower()

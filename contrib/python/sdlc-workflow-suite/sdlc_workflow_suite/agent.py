@@ -29,22 +29,21 @@ from .tools.spanner_query_tools import SpannerQueryTools
 
 logger = logging.getLogger(__name__)
 
-tools_enabled = bool(
-    config.spanner_project_id
-    and config.spanner_instance_id
-    and config.spanner_database_id
-)
+tools_enabled = config.is_spanner_configured
+
+if not config.model_name:
+    raise ValueError("MODEL_NAME environment variable is required but not set.")
 
 if tools_enabled:
     logger.info("Initializing SDLC agents with Spanner tools enabled.")
-    spanner_tools = list(SpannerQueryTools.get_toolset())
+    spanner_tools = SpannerQueryTools.get_toolset()
 else:
     logger.info("Initializing SDLC agents without Spanner tools.")
     spanner_tools = []
 
 user_story_refiner_agent = LlmAgent(
     name="user_story_refiner",
-    model=config.model_name or "",
+    model=config.model_name,
     description=(
         "Analyzes requirements or draft stories and refines them into"
         " comprehensive, standardized agile user story work items."
@@ -60,7 +59,7 @@ user_story_refiner_agent = LlmAgent(
 
 technical_designer_agent = LlmAgent(
     name="technical_designer",
-    model=config.model_name or "",
+    model=config.model_name,
     description=(
         "Analyzes refined user stories and generates concrete, structured RFC"
         " technical designs with Mermaid diagrams and ADRs."
@@ -76,7 +75,7 @@ technical_designer_agent = LlmAgent(
 
 task_planner_agent = LlmAgent(
     name="task_planner",
-    model=config.model_name or "",
+    model=config.model_name,
     description=(
         "Translates technical design documents and user stories into a"
         " granular, dependency-linked task execution plan."

@@ -16,11 +16,11 @@ import logging
 from typing import Any
 
 from google.adk.tools.tool_context import ToolContext
-from google.genai import types
+from google.genai.types import Part
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["ToolContext", "save_artifact"]
+__all__ = ["save_artifact"]
 
 
 async def save_artifact(
@@ -70,13 +70,22 @@ async def save_artifact(
 
         content_bytes = content.encode("utf-8")
 
-        artifact = types.Part.from_bytes(
-            data=content_bytes, mime_type=mime_type
-        )
+        artifact = Part.from_bytes(data=content_bytes, mime_type=mime_type)
 
-        version = await tool_context.save_artifact(
-            filename=filename, artifact=artifact
-        )
+        try:
+            version = await tool_context.save_artifact(
+                filename=filename, artifact=artifact
+            )
+        except ValueError as e:
+            logger.error(f"ValueError while saving artifact: {e!s}")
+            return {
+                "status": "error",
+                "filename": filename,
+                "message": (
+                    "ArtifactService not configured. Ensure artifact_service is provided to the Runner."
+                ),
+                "error": str(e),
+            }
 
         logger.info(
             f"Successfully saved artifact '{filename}' as version {version}"
@@ -91,16 +100,6 @@ async def save_artifact(
             ),
         }
 
-    except ValueError as e:
-        logger.error(f"ValueError: {e!s}")
-        return {
-            "status": "error",
-            "filename": filename,
-            "message": (
-                "ArtifactService not configured. Ensure artifact_service is provided to the Runner."
-            ),
-            "error": str(e),
-        }
     except Exception as e:
         logger.error(f"Unexpected error: {e!s}")
         return {

@@ -63,7 +63,7 @@ GOOGLE_CLOUD_STORAGE_BUCKET=your-bucket-name
 Install dependencies using `uv`:
 
 ```bash
-uv sync --dev
+uv sync --dev --group deployment
 ```
 
 ## How to Run
@@ -73,7 +73,7 @@ uv sync --dev
 To launch the interactive ADK web interface:
 
 ```bash
-uv run adk web sdlc_workflow_suite
+uv run adk web .
 ```
 
 ### Running Tests
@@ -92,7 +92,7 @@ uv run pytest tests/integration
 
 ### Deploying to Vertex AI Agent Engine
 
-You can deploy the agent suite to Google Cloud Vertex AI Reasoning Engine using the included deployment script:
+You can deploy the agent suite to Google Cloud Vertex AI Agent Engine using the included deployment script:
 
 ```bash
 uv run deployment/deploy.py --create

@@ -14,6 +14,9 @@
 
 """Test configuration and default environment variables for sdlc-workflow-suite tests."""
 
-import os
+from pathlib import Path
 
-os.environ.setdefault("MODEL_NAME", "gemini-3.5-flash")
+from dotenv import load_dotenv
+
+_env_example = Path(__file__).resolve().parent.parent / ".env.example"
+load_dotenv(dotenv_path=_env_example)

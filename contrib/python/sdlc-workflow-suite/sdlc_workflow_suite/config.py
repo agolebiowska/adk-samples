@@ -60,5 +60,14 @@ class AgentConfig(BaseSettings):
         """Backward-compatible alias for model_name."""
         return self.model_name
 
+    @property
+    def is_spanner_configured(self) -> bool:
+        """Returns True if all required Spanner settings are provided."""
+        return bool(
+            self.spanner_project_id
+            and self.spanner_instance_id
+            and self.spanner_database_id
+        )
+
 
 config = AgentConfig()
