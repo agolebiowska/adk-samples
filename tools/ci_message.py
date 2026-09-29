@@ -78,6 +78,7 @@ class Doc(StrEnum):
 
     MANIFEST = "manifestyaml-missing-or-invalid"
     OWNERSHIP_PLACEHOLDER = "ownershipteam-or-poc-is-a-placeholder"
+    MANIFEST_DEPLOYABLE = "contrib-recipe-is-not-deployable"
     FOLDER_NAME = "directory-name-too-long-or-invalid"
     SIZE_LIMIT = "recipe-exceeds-size-or-file-limit"
     REQUIRED_FILES = "required-file-or-directory-missing"
@@ -93,6 +94,7 @@ class Doc(StrEnum):
 
     RUFF_CONFIG = "pyprojecttoml-has-a-local-ruff-configuration"
     RUFF_STANDALONE = "standalone-ruff-config-file"
+    LINT_CONFIG = "standalone-lint-or-style-config-file"
     PROJECT_NAME = "project-name-doesnt-match-the-required-name"
     PROJECT_DESCRIPTION = "project-description-doesnt-match-manifest"
     REQUIRES_PYTHON = "requires-python-below-311"
