@@ -3,8 +3,8 @@ status: active
 language: python
 description: End-to-end SDLC workflow suite combining user story refinement, technical design, and task planning with SequentialAgent.
 ownership:
-  team: Google
-  poc: gagata
+  team: "Delta GSD"
+  poc: agolebiowska
 tags:
   - sdlc
   - sequential-agent
